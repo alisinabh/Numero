@@ -1,7 +1,12 @@
 defmodule Numero do
   @moduledoc """
-  Numero converts non standard number characters to standard english characters
+  Numero cat either normalize non-english digits in strings,
+  or convert english digits to non-english digits of your choice.
   """
+
+  @arabic_zero 1632
+  @persian_zero 1776
+  @nko_zero 1984
 
   @doc """
   Converts a string number to its standard english format
@@ -26,20 +31,19 @@ defmodule Numero do
   defp replace_chars([], acc), do: acc
 
   defp replace_chars([char | tail], acc) do
-    require Logger
     num = cond do
-      char >= 1632 and char <= 1641 ->
+      char >= @arabic_zero and char <= (@arabic_zero + 9) ->
         # Arabic normal numbers
-        char - 1584
+        char - @arabic_zero + 48
       char == 1759 or char == 1760 ->
         # Arabic custom zero
         48
-      char >= 1776 and char <= 1785 ->
+      char >= @persian_zero and char <= (@persian_zero + 9) ->
         # Persian numbers
-        char - 1728
-      char >= 1984 and char <= 1993 ->
+        char - @persian_zero + 48
+      char >= @nko_zero and char <= (@nko_zero + 9) ->
         # NKO numbers
-        char - 1936
+        char - @nko_zero + 48
       true ->
         char
     end
