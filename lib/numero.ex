@@ -78,8 +78,7 @@ defmodule Numero do
 
     case num do
       {number, ""} -> {:ok, number}
-      {_, str} -> :error
-      :error -> :error
+      _ -> :error
     end
   end
 end
