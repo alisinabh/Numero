@@ -12,14 +12,14 @@ defmodule Numero do
   Converts a string number to its standard english format
 
   ## Examples
-  iex> Numero.normalize("1۲3")
-  "123"
+      iex> Numero.normalize("1۲3")
+      "123"
 
-  iex> Numero.normalize("1۲3.1۱۰")
-  "123.110"
+      iex> Numero.normalize("1۲3.1۱۰")
+      "123.110"
 
-  iex> Numero.normalize("1۲a3.1۱۰ hello")
-  "12a3.110 hello"
+      iex> Numero.normalize("1۲a3.1۱۰ hello")
+      "12a3.110 hello"
   """
   @spec normalize(String.t) :: String.t
   def normalize(number) do
@@ -55,14 +55,14 @@ defmodule Numero do
   Converts a string number to number (Integer or Float)
 
   ## Examples
-  iex> Numero.normalize_as_number("1۲3")
-  {:ok, 123}
+      iex> Numero.normalize_as_number("1۲3")
+      {:ok, 123}
 
-  iex> Numero.normalize_as_number("1۲3.1۱۰")
-  {:ok, 123.11}
+      iex> Numero.normalize_as_number("1۲3.1۱۰")
+      {:ok, 123.11}
 
-  iex> Numero.normalize_as_number("1a3.1")
-  :error
+      iex> Numero.normalize_as_number("1a3.1")
+      :error
   """
   @spec normalize_as_number(String.t) :: {:ok, Integer.t} | {:ok, Float.t} | :error
   def normalize_as_number(number_str) do
