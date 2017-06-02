@@ -22,8 +22,8 @@ defmodule Numero do
       "12a3.110 hello"
   """
   @spec normalize(String.t) :: String.t
-  def normalize(number) do
-    number
+  def normalize(number_str) do
+    number_str
     |> String.to_charlist
     |> replace_chars("")
   end
