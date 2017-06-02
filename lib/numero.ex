@@ -54,6 +54,8 @@ defmodule Numero do
   @doc """
   Converts a string number to number (Integer or Float)
 
+  Returns ``:error`` if input string is not in correct format.
+
   ## Examples
       iex> Numero.normalize_as_number("1۲3")
       {:ok, 123}
@@ -80,5 +82,23 @@ defmodule Numero do
       {number, ""} -> {:ok, number}
       _ -> :error
     end
+  end
+
+  @doc """
+  Converts a string number to number (Integer or Float)
+
+  Throws match error if input string is not in correct format
+
+  ## Examples
+      iex> Numero.normalize_as_number!("1۲3")
+      123
+
+      iex> Numero.normalize_as_number!("1۲3.1۱۰")
+      123.11
+  """
+  @spec normalize_as_number!(String.t) :: Integer.t | Float.t
+  def normalize_as_number!(number_str) do
+    {:ok, number} = normalize_as_number(number_str)
+    number
   end
 end
