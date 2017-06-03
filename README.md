@@ -32,6 +32,9 @@ result = Numero.normalize_as_number("1۲۳۰4۳")
 
 result = Numero.normalize_as_number("1۲۳۰4۳.۴5")
 # result = {:ok, 123043.45}
+
+result = Numero.normalize_as_number!("1۲۳۰4۳.۴5")
+# result = 123043.45
 ```
 
 [https://hexdocs.pm/numero](https://hexdocs.pm/numero).
