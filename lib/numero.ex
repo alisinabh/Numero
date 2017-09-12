@@ -25,30 +25,31 @@ defmodule Numero do
   def normalize(number_str) do
     number_str
     |> String.to_charlist
-    |> replace_chars("")
+    |> replace_chars([])
   end
 
-  defp replace_chars([], acc), do: acc
+  defp replace_chars([], acc), do: to_string(acc)
 
   defp replace_chars([char | tail], acc) do
-    num = cond do
-      char >= @arabic_zero and char <= (@arabic_zero + 9) ->
-        # Arabic normal numbers
-        char - @arabic_zero + 48
-      char == 1759 or char == 1760 ->
-        # Arabic custom zero
-        48
-      char >= @persian_zero and char <= (@persian_zero + 9) ->
-        # Persian numbers
-        char - @persian_zero + 48
-      char >= @nko_zero and char <= (@nko_zero + 9) ->
-        # NKO numbers
-        char - @nko_zero + 48
-      true ->
-        char
-    end
+    num =
+      cond do
+        char >= @arabic_zero and char <= (@arabic_zero + 9) ->
+          # Arabic normal numbers
+          char - @arabic_zero + 48
+        char == 1759 or char == 1760 ->
+          # Arabic custom zero
+          48
+        char >= @persian_zero and char <= (@persian_zero + 9) ->
+          # Persian numbers
+          char - @persian_zero + 48
+        char >= @nko_zero and char <= (@nko_zero + 9) ->
+          # NKO numbers
+          char - @nko_zero + 48
+        true ->
+          char
+      end
 
-    replace_chars(tail, acc <> <<num>>)
+    replace_chars(tail, acc ++ [num])
   end
 
   @doc """
