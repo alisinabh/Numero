@@ -11,7 +11,7 @@ by adding `numero` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:numero, "~> 0.1.0"}]
+  [{:numero, "~> 0.2.0"}]
 end
 ```
 
