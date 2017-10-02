@@ -39,4 +39,24 @@ result = Numero.normalize_as_number!("1۲۳۰4۳.۴5")
 # result = 123043.45
 ```
 
+Strip all non numeric chars from a string:
+
+```elixir
+result = Numero.remove_non_digits("12 345abs")
+# result = "12345"
+
+# Or even make exceptions for some chars
+result = Numero.remove_non_digits("12 345abs", [' ', 'a'])
+# result = "12 345a"
+```
+
+Checking if a string is all numbers
+```elixir
+result = Numero.is_digit_only?("1234567890")
+# result = true
+
+result = Numero.is_digit_only?("1234567890.a")
+# result = false
+```
+
 [https://hexdocs.pm/numero](https://hexdocs.pm/numero).
