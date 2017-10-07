@@ -3,11 +3,9 @@ defmodule Numero do
   Numero cat either normalize non-english digits in strings,
   or convert english digits to non-english digits of your choice.
   """
+  @zero_starts [1632, 1776, 1984]
 
-  @arabic_zero 1632
-  @persian_zero 1776
-  @nko_zero 1984
-  @numbers ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+  @standard_digits ~c[0123456789]
 
   @doc """
   Converts a string number to its standard english format
@@ -81,23 +79,26 @@ defmodule Numero do
     number
   end
 
+  @doc false
+  def is_digit_only?(str), do:
+    do_digit_only?(str)
+
   @doc """
   Checks if all characters in a given string is numerical
 
   ## Examples
-      iex> Numero.is_digit_only?("1234567890")
+      iex> Numero.digit_only?("1234567890")
       true
 
-      iex> Numero.is_digit_only?("12 34")
+      iex> Numero.digit_only?("12 34")
       false
 
-      iex> Numero.is_digit_only?("a123")
+      iex> Numero.digit_only?("a123")
       false
   """
-  @spec is_digit_only?(String.t) :: boolean()
-  def is_digit_only?(str) do
-    is_digit?(str)
-  end
+  @spec digit_only?(String.t) :: boolean()
+  def digit_only?(str), do:
+    do_digit_only?(str)
 
 
   @doc """
@@ -105,13 +106,13 @@ defmodule Numero do
 
   ## Parameters
     - str: A given string to remove non numerical chars from
-    - exceptions(optional): a list of chars to accept and dont remove. e.g.: [' ', 'a']
+    - exceptions(optional): a list of chars to accept and dont remove. e.g.: ~c[a ]
 
   ## Examples
       iex> Numero.remove_non_digits("0 1 2 3 4 5 6 7 8 9 abcd")
       "0123456789"
 
-      iex> Numero.remove_non_digits("0 1 2 3 4 5 6 7 8 9 abcd", ['a', ' '])
+      iex> Numero.remove_non_digits("0 1 2 3 4 5 6 7 8 9 abcd", ~c[a ])
       "0 1 2 3 4 5 6 7 8 9 a"
 
       iex> Numero.remove_non_digits("")
@@ -124,7 +125,7 @@ defmodule Numero do
   def remove_non_digits(str, exceptions \\ []) do
     str
     |> String.to_charlist
-    |> do_remove_non_digits(exceptions, [])
+    |> do_remove_outer(@standard_digits ++ exceptions, [])
     |> to_string
   end
 
@@ -132,73 +133,61 @@ defmodule Numero do
   # Helpers #
   ###########
 
-  defp do_remove_non_digits([], _exceptions, acc), do: acc
+  Enum.each(@zero_starts, fn start ->
+    Enum.each(start..start+9, fn num ->
+    defp do_remove_outer([unquote(num) | tail], inner, acc), do:
+      do_remove_outer(tail, inner, acc ++ [unquote(num)])
+    end)
+  end)
 
-  defp do_remove_non_digits([char | tail], exceptions, acc) do
-    if does_match_any?(char, @numbers ++ exceptions) do
-      do_remove_non_digits(tail, exceptions, acc ++ [char])
+  defp do_remove_outer([], _inner, acc), do: acc
+
+  defp do_remove_outer([_ | tail], [], acc), do:
+    do_remove_outer(tail, [], acc)
+
+  defp do_remove_outer([char | tail], inner, acc) do
+    if Enum.count(inner) > 0 do
+      if does_match_any?(char, inner) do
+        do_remove_outer(tail, inner, acc ++ [char])
+      else
+        do_remove_outer(tail, inner, acc)
+      end
     else
-      do_remove_non_digits(tail, exceptions, acc)
+        do_remove_outer(tail, inner, acc)
     end
   end
 
-  defp replace_chars([], acc), do: to_string(acc)
+  defp do_remove_outer(_, _, acc), do: to_string(acc)
 
-  defp replace_chars([char | tail], acc, output_non_digit \\ true) do
-    num =
-      cond do
-        char >= @arabic_zero and char <= (@arabic_zero + 9) ->
-          # Arabic normal numbers
-          char - @arabic_zero + 48
-        char == 1759 or char == 1760 ->
-          # Arabic custom zero
-          48
-        char >= @persian_zero and char <= (@persian_zero + 9) ->
-          # Persian numbers
-          char - @persian_zero + 48
-        char >= @nko_zero and char <= (@nko_zero + 9) ->
-          # NKO numbers
-          char - @nko_zero + 48
-        true and output_non_digit ->
-          char
-        true ->
-          ""
-      end
-
-    replace_chars(tail, acc ++ [num])
-  end
-
-  defp is_digit?(str) do
-    if String.trim(str) == "" do
-      false
+  defp does_match_any?(char, [pattern | tail]) do
+    if char == pattern do
+      true
     else
-      norm_str = normalize(str) |> String.to_charlist
-
-      case norm_str do
-        [] -> false
-        _ -> do_is_digit?(norm_str)
-      end
-    end
-  end
-
-  defp do_is_digit?([]), do: true
-
-  defp do_is_digit?([char | tail]) do
-    if does_match_any?(char, @numbers) do
-      do_is_digit?(tail)
-    else
-      false
+      does_match_any?(char, tail)
     end
   end
 
   defp does_match_any?(_char, []), do:
     false
 
-  defp does_match_any?(char, [pattern | tail]) do
-    if [char] == pattern do
-      true
-    else
-      does_match_any?(char, tail)
-    end
-  end
+
+  Enum.each(@zero_starts, fn start ->
+    Enum.each(start..start+9, fn num ->
+    defp replace_chars([unquote(num) | tail], acc), do:
+      replace_chars(tail, acc ++ [unquote(num) - unquote(start) + 48])
+    end)
+  end)
+
+  defp replace_chars([], acc), do: to_string(acc)
+
+  defp replace_chars([char | tail], acc), do:
+    replace_chars(tail, acc ++ [char])
+
+
+  Enum.each(@standard_digits, fn digit ->
+    defp do_digit_only?(<<unquote(digit)::utf8, rest::binary>>), do: do_digit_only?(rest)
+  end)
+  defp do_digit_only?(<<_::utf8, _::binary>>), do: false
+  defp do_digit_only?(""), do: true
+
 end
