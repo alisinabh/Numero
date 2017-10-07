@@ -133,10 +133,30 @@ defmodule Numero do
 
   Enum.each(@zero_starts, fn start ->
     Enum.each(start..start+9, fn num ->
+    defp replace_chars(<<unquote(num)::utf8, tail::binary>>, acc), do:
+      replace_chars(tail, acc <> <<unquote(num) - unquote(start) + 48>>)
+    end)
+  end)
+
+  defp replace_chars("", acc), do: acc
+
+  defp replace_chars(<<char::utf8, tail::binary>>, acc), do:
+    replace_chars(tail, acc <> <<char>>)
+
+  Enum.each(@zero_starts, fn start ->
+    Enum.each(start..start+9, fn num ->
     defp do_remove_outer(<<unquote(num)::utf8, tail::binary>>, inner, acc), do:
       do_remove_outer(tail, inner, acc <> <<unquote(num)::utf8>>)
     end)
   end)
+
+
+  Enum.each(@standard_digits, fn digit ->
+    defp do_digit_only?(<<unquote(digit)::utf8, rest::binary>>), do: do_digit_only?(rest)
+  end)
+  defp do_digit_only?(<<_::utf8, _::binary>>), do: false
+  defp do_digit_only?(""), do: true
+
 
   defp do_remove_outer("", _inner, acc), do: acc
 
@@ -153,6 +173,8 @@ defmodule Numero do
 
   defp do_remove_outer(_, _, acc), do: acc
 
+  # does_match_any?/2 is used for when user specifies custom
+  # exceptions for remove_non_digits function.
   defp does_match_any?(char, [pattern | tail]) do
     if char == pattern do
       true
@@ -163,24 +185,5 @@ defmodule Numero do
 
   defp does_match_any?(_char, []), do:
     false
-
-
-  Enum.each(@zero_starts, fn start ->
-    Enum.each(start..start+9, fn num ->
-    defp replace_chars(<<unquote(num)::utf8, tail::binary>>, acc), do:
-      replace_chars(tail, acc <> <<unquote(num) - unquote(start) + 48>>)
-    end)
-  end)
-
-  defp replace_chars("", acc), do: acc
-
-  defp replace_chars(<<char::utf8, tail::binary>>, acc), do:
-    replace_chars(tail, acc <> <<char>>)
-
-  Enum.each(@standard_digits, fn digit ->
-    defp do_digit_only?(<<unquote(digit)::utf8, rest::binary>>), do: do_digit_only?(rest)
-  end)
-  defp do_digit_only?(<<_::utf8, _::binary>>), do: false
-  defp do_digit_only?(""), do: true
 
 end
