@@ -5,8 +5,6 @@ defmodule Numero do
   """
   @zero_starts ~c[0٠۰߀०০੦૦୦௦౦೦൦෦๐໐༠၀႐០᠐᥆᧐᪀᪐᭐᮰᱀᱐꘠꣐꤀꧐꧰꩐꯰０𐒠𑁦𑃰𑄶𑇐𑋰𑑐𑓐𑙐𑛀𑜰𑣠𑱐𑵐𖩠𖭐𝟎𝟘𝟢𝟬𝟶𞥐]
 
-  @standard_digits ~c[0123456789]
-
   @doc """
   Converts a string number to its standard english format
 
@@ -83,7 +81,7 @@ defmodule Numero do
     do_digit_only?(str)
 
   @doc """
-  Checks if all characters in a given string is numerical
+  Checks if all characters in a given string is numerical (In any utf number bases)
 
   ## Examples
       iex> Numero.digit_only?("1234567890")
@@ -94,6 +92,9 @@ defmodule Numero do
 
       iex> Numero.digit_only?("a123")
       false
+
+      iex> Numero.digit_only?("۱۲۳") # Persian digits
+      true
   """
   @spec digit_only?(String.t) :: boolean()
   def digit_only?(str), do:
@@ -132,9 +133,9 @@ defmodule Numero do
   ###########
 
   Enum.each(@zero_starts, fn start ->
-    Enum.each(start..start+9, fn num ->
-    defp replace_chars(<<unquote(num)::utf8, tail::binary>>, acc), do:
-      replace_chars(tail, acc <> <<unquote(num) - unquote(start) + 48>>)
+    Enum.each(start..start+9, fn digit ->
+      defp replace_chars(<<unquote(digit)::utf8, tail::binary>>, acc), do:
+        replace_chars(tail, acc <> <<unquote(digit) - unquote(start) + 48>>)
     end)
   end)
 
@@ -144,16 +145,18 @@ defmodule Numero do
     replace_chars(tail, acc <> <<char>>)
 
   Enum.each(@zero_starts, fn start ->
-    Enum.each(start..start+9, fn num ->
-    defp do_remove_outer(<<unquote(num)::utf8, tail::binary>>, inner, acc), do:
-      do_remove_outer(tail, inner, acc <> <<unquote(num)::utf8>>)
+    Enum.each(start..start+9, fn digit ->
+      defp do_remove_outer(<<unquote(digit)::utf8, tail::binary>>, inner, acc), do:
+        do_remove_outer(tail, inner, acc <> <<unquote(digit)::utf8>>)
     end)
   end)
 
-
-  Enum.each(@standard_digits, fn digit ->
-    defp do_digit_only?(<<unquote(digit)::utf8, rest::binary>>), do: do_digit_only?(rest)
+  Enum.each(@zero_starts, fn start ->
+    Enum.each(start..start+9, fn digit ->
+      defp do_digit_only?(<<unquote(digit)::utf8, rest::binary>>), do: do_digit_only?(rest)
+    end)
   end)
+
   defp do_digit_only?(<<_::utf8, _::binary>>), do: false
   defp do_digit_only?(""), do: true
 
