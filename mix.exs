@@ -1,7 +1,7 @@
 defmodule Numero.Mixfile do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.3.0-RC0"
 
   def project do
     [app: :numero,
