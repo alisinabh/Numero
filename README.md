@@ -1,6 +1,7 @@
 # Numero
 
 [![Build Status](https://travis-ci.org/alisinabh/Numero.svg?branch=master)](https://travis-ci.org/alisinabh/Numero)
+[![Hex.pm](https://img.shields.io/badge/hex-0.3.0-blue.svg)](https://hex.pm/packages/numero)
 
 A micro library for converting non-english digits.
 
@@ -11,7 +12,7 @@ by adding `numero` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:numero, "~> 0.2.0"}]
+  [{:numero, "~> 0.3.0"}]
 end
 ```
 
@@ -45,17 +46,17 @@ Strip all non numeric chars from a string:
 result = Numero.remove_non_digits("12 345abs")
 # result = "12345"
 
-# Or even make exceptions for some chars
-result = Numero.remove_non_digits("12 345abs", [' ', 'a'])
+# Or even make exceptions for some chars like 'a' and ' ' (space)
+result = Numero.remove_non_digits("12 345bas", ~c[a ])
 # result = "12 345a"
 ```
 
 Checking if a string is all numbers
 ```elixir
-result = Numero.is_digit_only?("1234567890")
+result = Numero.digit_only?("1234567890")
 # result = true
 
-result = Numero.is_digit_only?("1234567890.a")
+result = Numero.digit_only?("1234567890.a")
 # result = false
 ```
 
