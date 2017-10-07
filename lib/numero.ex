@@ -3,7 +3,7 @@ defmodule Numero do
   Numero cat either normalize non-english digits in strings,
   or convert english digits to non-english digits of your choice.
   """
-  @zero_starts [1632, 1776, 1984]
+  @zero_starts [48, 1632, 1776, 1984]
 
   @standard_digits ~c[0123456789]
 
@@ -23,8 +23,7 @@ defmodule Numero do
   @spec normalize(String.t) :: String.t
   def normalize(number_str) do
     number_str
-    |> String.to_charlist
-    |> replace_chars([])
+    |> replace_chars("")
   end
 
   @doc """
@@ -124,8 +123,7 @@ defmodule Numero do
   @spec remove_non_digits(String.t, List.t) :: String.t
   def remove_non_digits(str, exceptions \\ []) do
     str
-    |> String.to_charlist
-    |> do_remove_outer(@standard_digits ++ exceptions, [])
+    |> do_remove_outer(exceptions, "")
     |> to_string
   end
 
@@ -135,29 +133,25 @@ defmodule Numero do
 
   Enum.each(@zero_starts, fn start ->
     Enum.each(start..start+9, fn num ->
-    defp do_remove_outer([unquote(num) | tail], inner, acc), do:
-      do_remove_outer(tail, inner, acc ++ [unquote(num)])
+    defp do_remove_outer(<<unquote(num)::utf8, tail::binary>>, inner, acc), do:
+      do_remove_outer(tail, inner, acc <> <<unquote(num)::utf8>>)
     end)
   end)
 
-  defp do_remove_outer([], _inner, acc), do: acc
+  defp do_remove_outer("", _inner, acc), do: acc
 
-  defp do_remove_outer([_ | tail], [], acc), do:
+  defp do_remove_outer(<<_::utf8, tail::binary>>, [], acc), do:
     do_remove_outer(tail, [], acc)
 
-  defp do_remove_outer([char | tail], inner, acc) do
-    if Enum.count(inner) > 0 do
-      if does_match_any?(char, inner) do
-        do_remove_outer(tail, inner, acc ++ [char])
-      else
-        do_remove_outer(tail, inner, acc)
-      end
+  defp do_remove_outer(<<char::utf8, tail::binary>>, inner, acc) do
+    if does_match_any?(char, inner) do
+      do_remove_outer(tail, inner, acc <> <<char>>)
     else
-        do_remove_outer(tail, inner, acc)
+      do_remove_outer(tail, inner, acc)
     end
   end
 
-  defp do_remove_outer(_, _, acc), do: to_string(acc)
+  defp do_remove_outer(_, _, acc), do: acc
 
   defp does_match_any?(char, [pattern | tail]) do
     if char == pattern do
@@ -173,16 +167,15 @@ defmodule Numero do
 
   Enum.each(@zero_starts, fn start ->
     Enum.each(start..start+9, fn num ->
-    defp replace_chars([unquote(num) | tail], acc), do:
-      replace_chars(tail, acc ++ [unquote(num) - unquote(start) + 48])
+    defp replace_chars(<<unquote(num)::utf8, tail::binary>>, acc), do:
+      replace_chars(tail, acc <> <<unquote(num) - unquote(start) + 48>>)
     end)
   end)
 
-  defp replace_chars([], acc), do: to_string(acc)
+  defp replace_chars("", acc), do: acc
 
-  defp replace_chars([char | tail], acc), do:
-    replace_chars(tail, acc ++ [char])
-
+  defp replace_chars(<<char::utf8, tail::binary>>, acc), do:
+    replace_chars(tail, acc <> <<char>>)
 
   Enum.each(@standard_digits, fn digit ->
     defp do_digit_only?(<<unquote(digit)::utf8, rest::binary>>), do: do_digit_only?(rest)
