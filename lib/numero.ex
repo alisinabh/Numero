@@ -3,7 +3,7 @@ defmodule Numero do
   Numero cat either normalize non-english digits in strings,
   or convert english digits to non-english digits of your choice.
   """
-  @zero_starts [48, 1632, 1776, 1984]
+  @zero_starts ~c[0٠۰߀०০੦૦୦௦౦೦൦෦๐໐༠၀႐០᠐᥆᧐᪀᪐᭐᮰᱀᱐꘠꣐꤀꧐꧰꩐꯰０𐒠𑁦𑃰𑄶𑇐𑋰𑑐𑓐𑙐𑛀𑜰𑣠𑱐𑵐𖩠𖭐𝟎𝟘𝟢𝟬𝟶𞥐]
 
   @standard_digits ~c[0123456789]
 
