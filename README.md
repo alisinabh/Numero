@@ -5,6 +5,12 @@
 
 A micro library for converting non-english digits.
 
+## Supported languages
+
+Almost all numbers defined in Unicode is supported in Numero.
+
+For more info on supported characters you can visit [here](http://www.fileformat.info/info/unicode/category/Nd/list.htm)
+
 ## Installation
 
 Numero can be installed
