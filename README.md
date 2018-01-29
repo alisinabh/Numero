@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/alisinabh/Numero.svg?branch=master)](https://travis-ci.org/alisinabh/Numero)
 [![Hex.pm](https://img.shields.io/badge/hex-0.3.0-blue.svg)](https://hex.pm/packages/numero)
 
-A micro library for converting non-english digits.
+A micro library for converting non-english UTF8 digits. (like ۱=1, ۲=2)
 
 ## Supported languages
 
