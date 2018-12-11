@@ -1,23 +1,25 @@
 defmodule Numero.Mixfile do
   use Mix.Project
 
-  @version "0.3.0"
+  @version "0.3.1"
 
   def project do
-    [app: :numero,
-     version: @version,
-     elixir: "~> 1.3",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     description: description(),
-     package: package(),
-     deps: deps(),
-     # Docs
-     name: "Numero",
-     source_url: "https://github.com/alisinabh/Numero",
-     homepage_url: "https://github.com/alisinabh/Numero",
-     docs: [main: "readme", # The main page in the docs
-           extras: ["README.md"]]]
+    [
+      app: :numero,
+      version: @version,
+      elixir: "~> 1.3",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      description: description(),
+      package: package(),
+      deps: deps(),
+      # Docs
+      name: "Numero",
+      source_url: "https://github.com/alisinabh/Numero",
+      homepage_url: "https://github.com/alisinabh/Numero",
+      # The main page in the docs
+      docs: [main: "readme", extras: ["README.md"]]
+    ]
   end
 
   # Configuration for the OTP application
