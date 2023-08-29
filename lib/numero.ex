@@ -39,7 +39,7 @@ defmodule Numero do
       iex> Numero.normalize_as_number("1a3.1")
       :error
   """
-  @spec normalize_as_number(String.t()) :: {:ok, Integer.t()} | {:ok, Float.t()} | :error
+  @spec normalize_as_number(String.t()) :: {:ok, number()} | :error
   def normalize_as_number(number_str) do
     num =
       number_str
@@ -71,7 +71,7 @@ defmodule Numero do
       iex> Numero.normalize_as_number!("1۲3.1۱۰")
       123.11
   """
-  @spec normalize_as_number!(String.t()) :: Integer.t() | Float.t()
+  @spec normalize_as_number!(String.t()) :: number()
   def normalize_as_number!(number_str) do
     {:ok, number} = normalize_as_number(number_str)
     number
@@ -119,7 +119,7 @@ defmodule Numero do
       iex> Numero.remove_non_digits("a0b1c2.,asd(*$!@#!@9-=+)")
       "0129"
   """
-  @spec remove_non_digits(String.t(), List.t()) :: String.t()
+  @spec remove_non_digits(String.t(), list()) :: String.t()
   def remove_non_digits(str, exceptions \\ []) do
     str
     |> do_remove_outer(exceptions, "")
