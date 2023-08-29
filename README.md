@@ -1,8 +1,8 @@
 # Numero
 
-[![Build Status](https://travis-ci.org/alisinabh/Numero.svg?branch=master)](https://travis-ci.org/alisinabh/Numero)
-[![Hex.pm](https://img.shields.io/badge/hex-0.3.0-blue.svg)](https://hex.pm/packages/numero)
-![Hex.pm](https://img.shields.io/hexpm/dt/numero.svg)
+[![Build Status](https://github.com/alisinabh/Numero/actions/workflows/ci.yml/badge.svg)](https://github.com/alisinabh/Numero)
+[![Module Version](https://img.shields.io/hexpm/v/numero.svg)](https://hex.pm/packages/numero)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/numero/)
 
 
 A micro library for converting non-english UTF8 digits. (like ۱=1, ۲=2)
