@@ -8,6 +8,7 @@ defmodule Numero.Mixfile do
       app: :numero,
       version: @version,
       elixir: "~> 1.6",
+      elixirc_paths: elixirc_paths(Mix.env()),
       description: description(),
       package: package(),
       deps: deps(),
@@ -29,7 +30,10 @@ defmodule Numero.Mixfile do
   end
 
   defp deps do
-    [{:ex_doc, "~> 0.30.6", only: :dev, runtime: false}]
+    [
+      {:ex_doc, "~> 0.37", only: :dev, runtime: false},
+      {:req, "~> 0.5", only: :dev}
+    ]
   end
 
   defp description do
@@ -48,4 +52,7 @@ defmodule Numero.Mixfile do
       links: %{"GitHub" => "https://github.com/alisinabh/Numero"}
     ]
   end
+
+  defp elixirc_paths(:dev), do: ["lib", "support"]
+  defp elixirc_paths(_), do: ["lib"]
 end

@@ -1,0 +1,53 @@
+defmodule Numero.Numbers do
+  # This file is generated from resources/DerivedNumericValues.txt when downloaded from
+  # the Unicode consortium. This is from Unicode version <%= @version %>.
+
+  @moduledoc false
+
+  <%= for start <- @zeros, digit <- (start..(start + 9)) do %>
+  def replace_chars(<<<%= digit %>::utf8, tail::binary>>, acc),
+    do: replace_chars(tail, acc <> <<<%= digit - start + 48%>>>)
+  <% end %>
+
+  def replace_chars("", acc), do: acc
+
+  def replace_chars(<<char::utf8, tail::binary>>, acc),
+    do: replace_chars(tail, acc <> <<char::utf8>>)
+
+  <%= for start <- @zeros, digit <- (start..(start + 9)) do %>
+  def remove_outer(<<<%= digit %>::utf8, tail::binary>>, inner, acc),
+    do: remove_outer(tail, inner, acc <> <<<%= digit %>::utf8>>)
+  <% end %>
+
+  def remove_outer("", _inner, acc), do: acc
+
+  def remove_outer(<<_::utf8, tail::binary>>, [], acc), do: remove_outer(tail, [], acc)
+
+  def remove_outer(<<char::utf8, tail::binary>>, inner, acc) do
+    if does_match_any?(char, inner) do
+      remove_outer(tail, inner, acc <> <<char>>)
+    else
+      remove_outer(tail, inner, acc)
+    end
+  end
+
+  def remove_outer(_, _, acc), do: acc
+
+  <%= for start <- @zeros, digit <- (start..(start + 9)) do %>
+  def digit_only?(<<<%= digit %>::utf8, rest::binary>>), do: digit_only?(rest)
+  <% end %>
+  def digit_only?(<<_::utf8, _::binary>>), do: false
+  def digit_only?(""), do: true
+
+  # does_match_any?/2 is used for when user specifies custom
+  # exceptions for remove_non_digits function.
+  defp does_match_any?(char, [pattern | tail]) do
+    if char == pattern do
+      true
+    else
+      does_match_any?(char, tail)
+    end
+  end
+
+  defp does_match_any?(_char, []), do: false
+end
