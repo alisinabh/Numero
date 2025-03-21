@@ -1,22 +1,26 @@
 # Numero
 
-[![Build Status](https://github.com/alisinabh/Numero/actions/workflows/ci.yml/badge.svg)](https://github.com/alisinabh/Numero)
-[![Module Version](https://img.shields.io/hexpm/v/numero.svg)](https://hex.pm/packages/numero)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/numero/)
+[![Build Status][build-badge]][repo] [![Module Version][version-shield]][hex]
+[![Hex Docs][docs-badge]][hexdocs]
 
+Numero is a micro library for converting non-Western Arabic numerals, such as ۱
+(Farsi), ۲ (Bengali), ۳ (Devanagari), ੪ (Gurmukhi), and ๕ (Thai), into Western
+Arabic numerals (1, 2, 3, 4, and 5, respectively). It also provides conversion
+into `integer()` and `float()` [basic types][bt].
 
-A micro library for converting non-english UTF8 digits. (like ۱=1, ۲=2)
+## Supported Languages / Scripts
 
-## Supported languages
+All numbers defined in Unicode 16.0.0 as `Nd` (numeric digit) class are
+supported. For more information, see the Unicode specification chapter 4,
+[Character Properties][core-spec-4] sections on General Category and Numeric
+Value.
 
-Almost all numbers defined in Unicode is supported in Numero.
-
-For more info on supported characters you can visit [here](http://www.fileformat.info/info/unicode/category/Nd/list.htm)
+The conversion routine is derived from [DerivedNumericValues.txt][dnv].
 
 ## Installation
 
-Numero can be installed
-by adding `numero` to your list of dependencies in `mix.exs`:
+Numero can be installed by adding `numero` to your list of dependencies in
+`mix.exs`:
 
 ```elixir
 def deps do
@@ -60,6 +64,7 @@ result = Numero.remove_non_digits("12 345bas", ~c[a ])
 ```
 
 Checking if a string is all numbers
+
 ```elixir
 result = Numero.digit_only?("1234567890")
 # result = true
@@ -68,4 +73,12 @@ result = Numero.digit_only?("1234567890.a")
 # result = false
 ```
 
-[https://hexdocs.pm/numero](https://hexdocs.pm/numero).
+[dnv]: https://www.unicode.org/Public/16.0.0/ucd/extracted/DerivedNumericValues.txt
+[core-spec-4]: https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-4/
+[bt]: https://hexdocs.pm/elixir/typespecs.html#basic-types
+[build-badge]: https://github.com/alisinabh/Numero/actions/workflows/ci.yml/badge.svg
+[repo]: https://github.com/alisinabh/Numero
+[version-shield]: https://img.shields.io/hexpm/v/numero.svg
+[hex]: https://hex.pm/packages/numero
+[docs-badge]: https://img.shields.io/badge/hex-docs-lightgreen.svg
+[hexdocs]: https://hexdocs.pm/numero/

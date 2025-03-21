@@ -3,7 +3,8 @@ defmodule Numero do
   Numero cat either normalize non-english digits in strings,
   or convert english digits to non-english digits of your choice.
   """
-  @zero_starts ~c[0٠۰߀०০੦૦୦௦౦೦൦෦๐໐༠၀႐០᠐᥆᧐᪀᪐᭐᮰᱀᱐꘠꣐꤀꧐꧰꩐꯰０𐒠𑁦𑃰𑄶𑇐𑋰𑑐𑓐𑙐𑛀𑜰𑣠𑱐𑵐𖩠𖭐𝟎𝟘𝟢𝟬𝟶𞥐]
+
+  alias Numero.Numbers, as: N
 
   @doc """
   Converts a string number to its standard english format
@@ -21,7 +22,7 @@ defmodule Numero do
   @spec normalize(String.t()) :: String.t()
   def normalize(number_str) do
     number_str
-    |> replace_chars("")
+    |> N.replace_chars("")
   end
 
   @doc """
@@ -78,7 +79,7 @@ defmodule Numero do
   end
 
   @doc false
-  def is_digit_only?(str), do: do_digit_only?(str)
+  def is_digit_only?(str), do: N.digit_only?(str)
 
   @doc """
   Checks if all characters in a given string is numerical (In any utf number bases)
@@ -97,7 +98,7 @@ defmodule Numero do
       true
   """
   @spec digit_only?(String.t()) :: boolean()
-  def digit_only?(str), do: do_digit_only?(str)
+  def digit_only?(str), do: N.digit_only?(str)
 
   @doc """
   Removes non digit chars from a given string
@@ -122,65 +123,7 @@ defmodule Numero do
   @spec remove_non_digits(String.t(), list()) :: String.t()
   def remove_non_digits(str, exceptions \\ []) do
     str
-    |> do_remove_outer(exceptions, "")
+    |> N.remove_outer(exceptions, "")
     |> to_string
   end
-
-  ###########
-  # Helpers #
-  ###########
-
-  Enum.each(@zero_starts, fn start ->
-    Enum.each(start..(start + 9), fn digit ->
-      defp replace_chars(<<unquote(digit)::utf8, tail::binary>>, acc),
-        do: replace_chars(tail, acc <> <<unquote(digit) - unquote(start) + 48>>)
-    end)
-  end)
-
-  defp replace_chars("", acc), do: acc
-
-  defp replace_chars(<<char::utf8, tail::binary>>, acc),
-    do: replace_chars(tail, acc <> <<char::utf8>>)
-
-  Enum.each(@zero_starts, fn start ->
-    Enum.each(start..(start + 9), fn digit ->
-      defp do_remove_outer(<<unquote(digit)::utf8, tail::binary>>, inner, acc),
-        do: do_remove_outer(tail, inner, acc <> <<unquote(digit)::utf8>>)
-    end)
-  end)
-
-  Enum.each(@zero_starts, fn start ->
-    Enum.each(start..(start + 9), fn digit ->
-      defp do_digit_only?(<<unquote(digit)::utf8, rest::binary>>), do: do_digit_only?(rest)
-    end)
-  end)
-
-  defp do_digit_only?(<<_::utf8, _::binary>>), do: false
-  defp do_digit_only?(""), do: true
-
-  defp do_remove_outer("", _inner, acc), do: acc
-
-  defp do_remove_outer(<<_::utf8, tail::binary>>, [], acc), do: do_remove_outer(tail, [], acc)
-
-  defp do_remove_outer(<<char::utf8, tail::binary>>, inner, acc) do
-    if does_match_any?(char, inner) do
-      do_remove_outer(tail, inner, acc <> <<char>>)
-    else
-      do_remove_outer(tail, inner, acc)
-    end
-  end
-
-  defp do_remove_outer(_, _, acc), do: acc
-
-  # does_match_any?/2 is used for when user specifies custom
-  # exceptions for remove_non_digits function.
-  defp does_match_any?(char, [pattern | tail]) do
-    if char == pattern do
-      true
-    else
-      does_match_any?(char, tail)
-    end
-  end
-
-  defp does_match_any?(_char, []), do: false
 end
