@@ -1,7 +1,8 @@
 # Numero
 
-[![Build Status][build-badge]][repo] [![Module Version][version-shield]][hex]
-[![Hex Docs][docs-badge]][hexdocs]
+[![Build Status][build-badge]](https://github.com/alisinabh/Numero)
+[![Module Version][version-shield]](https://hex.pm/packages/numero)
+[![Hex Docs][docs-badge]](https://hexdocs.pm/numero)
 
 Numero is a micro library for converting non-Western Arabic numerals, such as ۱
 (Farsi), ۲ (Bengali), ۳ (Devanagari), ੪ (Gurmukhi), and ๕ (Thai), into Western
