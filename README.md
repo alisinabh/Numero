@@ -25,7 +25,7 @@ Numero can be installed by adding `numero` to your list of dependencies in
 
 ```elixir
 def deps do
-  [{:numero, "~> 0.3.0"}]
+  [{:numero, "~> 0.5.0"}]
 end
 ```
 
